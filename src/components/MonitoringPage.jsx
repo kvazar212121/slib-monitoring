@@ -7,6 +7,7 @@ import JournalDrawer from './JournalDrawer';
 import Icon, { CRITERIA_ICON, GROUP_ICON } from './Icon';
 import CriteriaStatCard from './CriteriaStatCard';
 import CategoryDetailView from './CategoryDetailView';
+import JournalsPanel from './JournalsPanel';
 
 function GroupBadge({ status, label }) {
   const s = STATUS[status];
@@ -37,6 +38,7 @@ export default function MonitoringPage() {
     return m ? GROUPS.find((g) => g.id === m[1]) || null : null;
   })();
   const [categoryView, setCategoryView] = useState(initialCategory); // ochilgan kategoriya guruhi
+  const [journalsPanel, setJournalsPanel] = useState(null); // 'all'|'green'|'yellow'|'red' yoki null
   const [sortBy, setSortBy] = useState('total');
   const [page, setPage] = useState(1);
   const pageSize = 8;
@@ -107,19 +109,17 @@ export default function MonitoringPage() {
       {/* KPI cards */}
       <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginBottom: 22 }}>
         <KpiCard variant="blue" title="Jami jurnallar" subtitle="Umumiy soni" index={0}
-          value={summary.total} percent={100} />
+          value={summary.total} percent={100}
+          onClick={() => setJournalsPanel('all')} />
         <KpiCard variant="green" title="Yaxshi" subtitle="Faol jurnallar" index={1}
           value={summary.green} total={summary.total} percent={Math.round((summary.green / summary.total) * 100)}
-          trend={[40,45,52,58,60,66,70,74,80,85,88,92]}
-          active={statusFilter === 'green'} onClick={() => { setStatusFilter(statusFilter === 'green' ? 'all' : 'green'); setPage(1); }} />
+          active={false} onClick={() => setJournalsPanel('green')} />
         <KpiCard variant="yellow" title="O'rtacha" subtitle="O'rtacha faol jurnallar" index={2}
           value={summary.yellow} total={summary.total} percent={Math.round((summary.yellow / summary.total) * 100)}
-          trend={[60,58,55,57,54,52,50,53,49,51,48,50]}
-          active={statusFilter === 'yellow'} onClick={() => { setStatusFilter(statusFilter === 'yellow' ? 'all' : 'yellow'); setPage(1); }} />
+          active={false} onClick={() => setJournalsPanel('yellow')} />
         <KpiCard variant="red" title="Faol emas" subtitle="Faol bo'lmagan jurnallar" index={3}
           value={summary.red} total={summary.total} percent={Math.round((summary.red / summary.total) * 100)}
-          trend={[30,28,32,26,29,24,27,22,25,20,23,18]}
-          active={statusFilter === 'red'} onClick={() => { setStatusFilter(statusFilter === 'red' ? 'all' : 'red'); setPage(1); }} />
+          active={false} onClick={() => setJournalsPanel('red')} />
       </div>
 
       {/* Kriteriyalar bo'yicha umumiy ko'rsatkichlar */}
@@ -142,166 +142,6 @@ export default function MonitoringPage() {
         </div>
       </div>
 
-      {/* Group view tabs */}
-      <div style={{ display: 'flex', gap: 8, marginBottom: 14, flexWrap: 'wrap' }}>
-        {[{ id: 'overview', icon: 'chart', short: "Umumiy ko'rinish" }, ...GROUPS.map((g) => ({ id: g.id, icon: GROUP_ICON[g.id], short: g.short }))].map((g) => {
-          const on = groupView === g.id;
-          return (
-            <button key={g.id} onClick={() => setGroupView(g.id)}
-              style={{
-                display: 'flex', alignItems: 'center', gap: 7, padding: '9px 15px', borderRadius: 10,
-                background: on ? 'var(--text)' : 'var(--surface)', color: on ? '#fff' : 'var(--text-2)',
-                border: '1px solid ' + (on ? 'var(--text)' : 'var(--border)'), fontSize: 13, fontWeight: 700,
-                transition: 'all 0.15s', boxShadow: on ? 'var(--shadow)' : 'none',
-              }}>
-              <Icon name={g.icon} size={16} />{g.short}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Toolbar */}
-      <div id="journals-table" style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 0, background: 'var(--surface)', padding: 12, borderRadius: '14px 14px 0 0', border: '1px solid var(--border)', borderBottom: 'none', scrollMarginTop: 16 }}>
-        <div style={{ flex: 1, minWidth: 220, display: 'flex', alignItems: 'center', gap: 8, padding: '9px 13px', background: 'var(--surface-3)', borderRadius: 9 }}>
-          <span style={{ color: 'var(--text-3)', display: 'inline-flex' }}><Icon name="search" size={16} /></span>
-          <input value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-            placeholder="Jurnal nomini qidirish..."
-            style={{ border: 'none', background: 'transparent', outline: 'none', flex: 1, fontSize: 13.5, color: 'var(--text)' }} />
-        </div>
-        <select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-          style={selectStyle}>
-          <option value="all">Barcha statuslar</option>
-          <option value="green">🟢 Yaxshi</option>
-          <option value="yellow">🟡 O'rtacha</option>
-          <option value="red">🔴 Faol emas</option>
-        </select>
-        <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} style={selectStyle}>
-          <option value="total">Ball bo'yicha</option>
-          <option value="name">Nom bo'yicha</option>
-          <option value="articles">Maqola soni</option>
-        </select>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '0 6px', fontSize: 12.5, color: 'var(--text-3)', fontWeight: 600 }}>
-          Jami: <b style={{ color: 'var(--text)' }}>{filtered.length}</b> jurnal
-        </div>
-      </div>
-
-      {/* Table */}
-      <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '0 0 14px 14px', overflow: 'hidden', boxShadow: 'var(--shadow-sm)' }}>
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: groupView === 'overview' ? 1120 : 760 }}>
-            <thead>
-              <tr style={{ background: 'var(--surface-2)' }}>
-                <th style={{ ...thStyle, textAlign: 'left', width: 30 }}>#</th>
-                <th style={{ ...thStyle, textAlign: 'left', minWidth: 240 }}>Jurnal nomi</th>
-                <th style={{ ...thStyle, minWidth: 92 }}>Status / Ball</th>
-                {groupView === 'overview' ? (
-                  <>
-                    {GROUPS.map((g) => (
-                      <th key={g.id} style={{ ...thStyle, minWidth: 110 }} title={g.hint}>
-                        <span style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
-                          <Icon name={GROUP_ICON[g.id]} size={16} />
-                          <span style={{ fontSize: 10.5 }}>{g.short}</span>
-                        </span>
-                      </th>
-                    ))}
-                    <th style={{ ...thStyle, minWidth: 88 }}>Trend</th>
-                  </>
-                ) : (
-                  groupCriteria.map((c) => (
-                    <th key={c.id} style={{ ...thStyle, width: 46 }} title={`${c.name}: ${c.desc}`}>
-                      <span style={{ display: 'inline-flex', justifyContent: 'center' }}><Icon name={CRITERIA_ICON[c.id]} size={16} /></span>
-                    </th>
-                  ))
-                )}
-                <th style={{ ...thStyle, minWidth: 96 }}>Oxirgi faollik</th>
-                <th style={{ ...thStyle, width: 44 }}></th>
-              </tr>
-            </thead>
-            <tbody>
-              {pageItems.map((j, i) => {
-                const st = statusFromScore(j.total);
-                return (
-                  <tr key={j.id}
-                    onClick={() => setSelected(j)}
-                    style={{ borderTop: '1px solid var(--surface-3)', cursor: 'pointer', transition: 'background 0.12s' }}
-                    onMouseEnter={(e) => e.currentTarget.style.background = 'var(--surface-2)'}
-                    onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}>
-                    <td style={{ ...tdStyle, color: 'var(--text-3)', fontWeight: 700 }}>{(page - 1) * pageSize + i + 1}</td>
-                    <td style={tdStyle}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 11 }}>
-                        <div style={{ width: 4, height: 34, borderRadius: 3, background: st.color, flexShrink: 0 }} />
-                        <div style={{ minWidth: 0 }}>
-                          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text)', maxWidth: 260, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{j.name}</div>
-                          <div style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 1 }}>{j.issn ? `ISSN: ${j.issn}` : j.studyField}</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td style={{ ...tdStyle, textAlign: 'center' }}>
-                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-                        <div style={{ fontSize: 15, fontWeight: 800, color: st.color }}>{j.total}<span style={{ fontSize: 10, color: 'var(--text-3)', fontWeight: 600 }}>/100</span></div>
-                        <StatusPill status={st.id} size="sm" />
-                      </div>
-                    </td>
-                    {groupView === 'overview' ? (
-                      <>
-                        {GROUPS.map((g) => (
-                          <td key={g.id} style={{ ...tdStyle, textAlign: 'center' }}>
-                            <div style={{ display: 'flex', justifyContent: 'center' }}>
-                              <GroupBadge status={j.groupStatus[g.id]} label={`${j.groupScore[g.id]}/${j.groupMax[g.id]}`} />
-                            </div>
-                          </td>
-                        ))}
-                        <td style={{ ...tdStyle, textAlign: 'center' }}>
-                          <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <Sparkline data={j.trend} color={st.color} width={72} height={26} />
-                          </div>
-                        </td>
-                      </>
-                    ) : (
-                      groupCriteria.map((c) => {
-                        const val = j.scores[c.id];
-                        const ratio = val / c.max;
-                        const cs = ratio >= 0.7 ? 'green' : ratio >= 0.4 ? 'yellow' : 'red';
-                        return (
-                          <td key={c.id} style={{ ...tdStyle, textAlign: 'center' }}>
-                            <CriteriaCell status={cs} value={val} max={c.max} title={c.name} />
-                          </td>
-                        );
-                      })
-                    )}
-                    <td style={{ ...tdStyle, textAlign: 'center' }}>
-                      <div style={{ fontSize: 12, fontWeight: 700, color: j.lastUpdateDays < 30 ? 'var(--green)' : j.lastUpdateDays < 60 ? 'var(--yellow)' : 'var(--red)' }}>
-                        {j.lastUpdateLabel}
-                      </div>
-                    </td>
-                    <td style={{ ...tdStyle, textAlign: 'center' }}>
-                      <span style={{ color: 'var(--text-3)', display: 'inline-flex' }}><Icon name="chevronRight" size={16} /></span>
-                    </td>
-                  </tr>
-                );
-              })}
-              {pageItems.length === 0 && (
-                <tr><td colSpan={12} style={{ padding: 40, textAlign: 'center', color: 'var(--text-3)' }}>Jurnal topilmadi</td></tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Pagination */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 18px', borderTop: '1px solid var(--surface-3)', flexWrap: 'wrap', gap: 10 }}>
-          <div style={{ fontSize: 12.5, color: 'var(--text-3)' }}>
-            {(page - 1) * pageSize + 1}-{Math.min(page * pageSize, filtered.length)} / {filtered.length} ta jurnal
-          </div>
-          <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
-            <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1} style={pageBtn(page === 1)}><Icon name="chevronLeft" size={15} /></button>
-            {Array.from({ length: totalPages }, (_, i) => i + 1).slice(0, 6).map((p) => (
-              <button key={p} onClick={() => setPage(p)} style={pageBtn(false, p === page)}>{p}</button>
-            ))}
-            <button onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page === totalPages} style={pageBtn(page === totalPages)}><Icon name="chevronRight" size={15} /></button>
-          </div>
-        </div>
-      </div>
-
       {/* Legend row */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))', gap: 14, marginTop: 20 }}>
         <LegendCard />
@@ -314,6 +154,13 @@ export default function MonitoringPage() {
         <CategoryDetailView
           group={categoryView}
           onClose={() => setCategoryView(null)}
+          onOpenJournal={(j) => setSelected(j)}
+        />
+      )}
+      {journalsPanel && (
+        <JournalsPanel
+          initialStatus={journalsPanel}
+          onClose={() => setJournalsPanel(null)}
           onOpenJournal={(j) => setSelected(j)}
         />
       )}
