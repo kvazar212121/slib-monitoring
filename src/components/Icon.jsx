@@ -63,6 +63,8 @@ const PATHS = {
   clock: <><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></>,
   box: <><path d="M12 3 3 7.5v9L12 21l9-4.5v-9z" /><path d="M3 7.5 12 12l9-4.5M12 12v9" /></>,
   zap: <path d="M13 2 4 14h7l-1 8 9-12h-7z" />,
+  trendUp: <><path d="M3 17l6-6 4 4 7-7" /><path d="M17 8h4v4" /></>,
+  trendDown: <><path d="M3 7l6 6 4-4 7 7" /><path d="M17 16h4v-4" /></>,
   pen: <><path d="m15 5 4 4" /><path d="M4 20l1.5-5L16 4.5a2.1 2.1 0 0 1 3 3L8.5 18z" /></>,
 };
 

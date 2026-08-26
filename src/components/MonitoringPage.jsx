@@ -6,6 +6,7 @@ import JournalDrawer from './JournalDrawer';
 import Icon, { CRITERIA_ICON, GROUP_ICON } from './Icon';
 import StatusStatCard from './StatusStatCard';
 import TotalStatCard from './TotalStatCard';
+import TopStatsRow from './TopStatsRow';
 import CategoryDetailView from './CategoryDetailView';
 import JournalsPanel from './JournalsPanel';
 import CategoryRow from './CategoryRow';
@@ -115,6 +116,9 @@ export default function MonitoringPage() {
           </button>
         </div>
       </div>
+
+      {/* Tepadagi kichik statistika kartalari */}
+      <TopStatsRow />
 
       {/* Status bo'yicha umumiy ko'rsatkichlar */}
       <div style={{ marginBottom: 24 }}>
