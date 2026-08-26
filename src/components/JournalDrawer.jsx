@@ -62,7 +62,7 @@ export default function JournalDrawer({ journal, onClose }) {
               { l: 'Kutilyapti', v: journal.metrics.pendingApplications },
               { l: "O'rt. kun", v: journal.metrics.avgReviewDays },
             ].map((m) => (
-              <div key={m.l} style={{ background: 'rgba(255,255,255,0.18)', borderRadius: 11, padding: '10px 6px', textAlign: 'center', backdropFilter: 'blur(4px)' }}>
+              <div key={m.l} style={{ background: 'rgba(255,255,255,0.18)', borderRadius: 7, padding: '10px 6px', textAlign: 'center', backdropFilter: 'blur(4px)' }}>
                 <div style={{ fontSize: 19, fontWeight: 800 }}>{m.v}</div>
                 <div style={{ fontSize: 10.5, opacity: 0.9 }}>{m.l}</div>
               </div>
@@ -86,7 +86,7 @@ export default function JournalDrawer({ journal, onClose }) {
                   </div>
                   <StatusPill status={gs} size="sm">{gScore}/{gMax}</StatusPill>
                 </div>
-                <div style={{ background: 'var(--surface)', borderRadius: 12, border: '1px solid var(--border)', overflow: 'hidden' }}>
+                <div style={{ background: 'var(--surface)', borderRadius: 7, border: '1px solid var(--border)', overflow: 'hidden' }}>
                   {items.map((c, i) => {
                     const val = journal.scores[c.id];
                     const ratio = val / c.max;

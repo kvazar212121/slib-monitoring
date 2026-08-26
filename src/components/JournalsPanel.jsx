@@ -60,7 +60,7 @@ export default function JournalsPanel({ initialStatus = 'all', group = null, onC
           <button onClick={onClose} style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '9px 15px', borderRadius: 10, background: 'rgba(255,255,255,0.18)', color: '#fff', fontWeight: 700, fontSize: 13, backdropFilter: 'blur(4px)' }}>
             <Icon name="chevronLeft" size={16} /> Orqaga
           </button>
-          <div style={{ width: 46, height: 46, borderRadius: 13, background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <div style={{ width: 46, height: 46, borderRadius: 8, background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
             <Icon name={meta.icon} size={24} />
           </div>
           <div style={{ flex: 1 }}>
@@ -75,7 +75,7 @@ export default function JournalsPanel({ initialStatus = 'all', group = null, onC
               { l: 'Maqola', v: totalArticles },
               { l: 'DOI bor', v: withDoi },
             ].map((s) => (
-              <div key={s.l} style={{ background: 'rgba(255,255,255,0.16)', borderRadius: 12, padding: '8px 15px', textAlign: 'center', backdropFilter: 'blur(4px)', minWidth: 66 }}>
+              <div key={s.l} style={{ background: 'rgba(255,255,255,0.16)', borderRadius: 7, padding: '8px 15px', textAlign: 'center', backdropFilter: 'blur(4px)', minWidth: 66 }}>
                 <div style={{ fontSize: 21, fontWeight: 800 }}>{s.v}</div>
                 <div style={{ fontSize: 10.5, opacity: 0.9 }}>{s.l}</div>
               </div>
@@ -172,7 +172,7 @@ function JournalCard({ j, index, groupView, groupCriteria, group, onClick }) {
   const scoreMax = group ? j.groupMax[group.id] : 100;
   return (
     <div onClick={onClick}
-      style={{ background: 'var(--surface)', borderRadius: 16, border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)', overflow: 'hidden', cursor: 'pointer', transition: 'transform 0.15s, box-shadow 0.15s', animation: `fadeUp 0.4s ease ${Math.min(index * 0.03, 0.4)}s both` }}
+      style={{ background: 'var(--surface)', borderRadius: 9, border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)', overflow: 'hidden', cursor: 'pointer', transition: 'transform 0.15s, box-shadow 0.15s', animation: `fadeUp 0.4s ease ${Math.min(index * 0.03, 0.4)}s both` }}
       onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = 'var(--shadow-lg)'; }}
       onMouseLeave={(e) => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'var(--shadow-sm)'; }}>
       <div style={{ height: 4, background: st.color }} />
@@ -197,9 +197,9 @@ function JournalCard({ j, index, groupView, groupCriteria, group, onClick }) {
         {groupView === 'overview' ? (
           <div style={{ display: 'flex', gap: 6, marginTop: 12 }}>
             {GROUPS.map((g) => (
-              <div key={g.id} style={{ flex: 1, background: STATUS[j.groupStatus[g.id]].soft, borderRadius: 8, padding: '6px 4px', textAlign: 'center' }} title={g.title}>
-                <div style={{ display: 'flex', justifyContent: 'center', color: STATUS[j.groupStatus[g.id]].color }}><Icon name={GROUP_ICON[g.id]} size={14} /></div>
-                <div style={{ fontSize: 11, fontWeight: 800, color: STATUS[j.groupStatus[g.id]].color, marginTop: 2 }}>{j.groupScore[g.id]}/{j.groupMax[g.id]}</div>
+              <div key={g.id} style={{ flex: 1, background: 'var(--surface-3)', borderRadius: 6, padding: '6px 4px', textAlign: 'center' }} title={g.title}>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 4, color: 'var(--text-3)' }}><Icon name={GROUP_ICON[g.id]} size={13} /><StatusDot status={j.groupStatus[g.id]} size={6} /></div>
+                <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--text-2)', marginTop: 3 }}>{j.groupScore[g.id]}/{j.groupMax[g.id]}</div>
               </div>
             ))}
           </div>
@@ -231,7 +231,7 @@ function JournalCard({ j, index, groupView, groupCriteria, group, onClick }) {
 
 function JournalsTable({ list, groupView, groupCriteria, onOpenJournal }) {
   return (
-    <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 14, overflow: 'hidden', boxShadow: 'var(--shadow-sm)' }}>
+    <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, overflow: 'hidden', boxShadow: 'var(--shadow-sm)' }}>
       <div style={{ overflowX: 'auto' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: groupView === 'overview' ? 1080 : 720 }}>
           <thead>
@@ -284,9 +284,9 @@ function JournalsTable({ list, groupView, groupCriteria, onOpenJournal }) {
                     <>
                       {GROUPS.map((g) => (
                         <td key={g.id} style={{ ...tdS, textAlign: 'center' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '3px 8px', borderRadius: 7, background: STATUS[j.groupStatus[g.id]].soft, justifyContent: 'center' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '3px 8px', borderRadius: 6, background: 'var(--surface-3)', justifyContent: 'center' }}>
                             <StatusDot status={j.groupStatus[g.id]} size={7} />
-                            <span style={{ fontSize: 11, fontWeight: 700, color: STATUS[j.groupStatus[g.id]].color }}>{j.groupScore[g.id]}/{j.groupMax[g.id]}</span>
+                            <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-2)' }}>{j.groupScore[g.id]}/{j.groupMax[g.id]}</span>
                           </div>
                         </td>
                       ))}

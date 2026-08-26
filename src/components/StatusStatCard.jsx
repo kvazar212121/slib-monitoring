@@ -14,7 +14,7 @@ export default function StatusStatCard({ index, statusKey, count, total, groupBr
     <div
       onClick={() => onView(statusKey)}
       style={{
-        background: 'var(--surface)', borderRadius: 18, border: '1px solid var(--border)',
+        background: 'var(--surface)', borderRadius: 10, border: '1px solid var(--border)',
         boxShadow: 'var(--shadow-sm)', overflow: 'hidden', cursor: 'pointer',
         animation: `fadeUp 0.45s ease ${index * 0.08}s both`,
         display: 'flex', flexDirection: 'column', transition: 'transform 0.15s, box-shadow 0.15s',
@@ -27,7 +27,7 @@ export default function StatusStatCard({ index, statusKey, count, total, groupBr
         <div style={{ position: 'absolute', right: -20, top: -25, width: 120, height: 120, borderRadius: '50%', background: 'rgba(255,255,255,0.12)' }} />
         <div style={{ position: 'absolute', right: 30, bottom: -35, width: 80, height: 80, borderRadius: '50%', background: 'rgba(255,255,255,0.08)' }} />
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, position: 'relative' }}>
-          <div style={{ width: 46, height: 46, borderRadius: 13, background: 'rgba(255,255,255,0.22)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, backdropFilter: 'blur(4px)' }}>
+          <div style={{ width: 46, height: 46, borderRadius: 8, background: 'rgba(255,255,255,0.22)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, backdropFilter: 'blur(4px)' }}>
             <Icon name={icon} size={24} strokeWidth={2.5} />
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>

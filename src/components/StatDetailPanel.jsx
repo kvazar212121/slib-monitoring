@@ -36,7 +36,7 @@ export default function StatDetailPanel({ statId, onClose, onOpenJournal }) {
           <button onClick={onClose} style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '9px 15px', borderRadius: 10, background: 'rgba(255,255,255,0.18)', color: '#fff', fontWeight: 700, fontSize: 13, backdropFilter: 'blur(4px)' }}>
             <Icon name="chevronLeft" size={16} /> Orqaga
           </button>
-          <div style={{ width: 46, height: 46, borderRadius: 13, background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <div style={{ width: 46, height: 46, borderRadius: 8, background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
             <Icon name={meta.icon} size={24} />
           </div>
           <div style={{ flex: 1 }}>
@@ -45,11 +45,11 @@ export default function StatDetailPanel({ statId, onClose, onOpenJournal }) {
             <div style={{ fontSize: 12.5, opacity: 0.9, marginTop: 2 }}>{meta.note}</div>
           </div>
           <div style={{ display: 'flex', gap: 10 }}>
-            <div style={{ background: 'rgba(255,255,255,0.16)', borderRadius: 12, padding: '10px 18px', textAlign: 'center', backdropFilter: 'blur(4px)' }}>
+            <div style={{ background: 'rgba(255,255,255,0.16)', borderRadius: 7, padding: '10px 18px', textAlign: 'center', backdropFilter: 'blur(4px)' }}>
               <div style={{ fontSize: 24, fontWeight: 800 }}>{meta.total}</div>
               <div style={{ fontSize: 10.5, opacity: 0.9 }}>Jami</div>
             </div>
-            <div style={{ background: 'rgba(255,255,255,0.16)', borderRadius: 12, padding: '10px 18px', textAlign: 'center', backdropFilter: 'blur(4px)' }}>
+            <div style={{ background: 'rgba(255,255,255,0.16)', borderRadius: 7, padding: '10px 18px', textAlign: 'center', backdropFilter: 'blur(4px)' }}>
               <div style={{ fontSize: 24, fontWeight: 800 }}>{list.length}</div>
               <div style={{ fontSize: 10.5, opacity: 0.9 }}>Jurnal</div>
             </div>
@@ -69,7 +69,7 @@ export default function StatDetailPanel({ statId, onClose, onOpenJournal }) {
 
       {/* Table */}
       <div style={{ flex: 1, overflowY: 'auto', padding: '20px 28px 40px' }}>
-        <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 14, overflow: 'hidden', boxShadow: 'var(--shadow-sm)' }}>
+        <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, overflow: 'hidden', boxShadow: 'var(--shadow-sm)' }}>
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 640 }}>
               <thead>

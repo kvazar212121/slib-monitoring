@@ -21,7 +21,7 @@ export default function TopStatsRow({ onOpen }) {
           <div key={s.id}
             onClick={() => onOpen && onOpen(s.id)}
             style={{
-              background: 'var(--surface)', borderRadius: 14, border: '1px solid var(--border)',
+              background: 'var(--surface)', borderRadius: 8, border: '1px solid var(--border)',
               boxShadow: 'var(--shadow-sm)', padding: '14px 16px', cursor: 'pointer',
               animation: `fadeUp 0.4s ease ${i * 0.05}s both`, transition: 'transform 0.15s, box-shadow 0.15s',
             }}

@@ -23,7 +23,7 @@ export default function CategoryRow({ index, category, onOpenJournal }) {
 
   return (
     <div style={{
-      background: 'var(--surface)', borderRadius: 18, border: '1px solid var(--border)',
+      background: 'var(--surface)', borderRadius: 10, border: '1px solid var(--border)',
       boxShadow: 'var(--shadow-sm)', overflow: 'hidden', marginBottom: 16,
       animation: `fadeUp 0.45s ease ${index * 0.06}s both`,
     }}>
@@ -34,7 +34,7 @@ export default function CategoryRow({ index, category, onOpenJournal }) {
           <div style={{ position: 'absolute', right: -20, top: -25, width: 120, height: 120, borderRadius: '50%', background: 'rgba(255,255,255,0.1)' }} />
           <div style={{ position: 'absolute', right: 40, bottom: -30, width: 70, height: 70, borderRadius: '50%', background: 'rgba(255,255,255,0.07)' }} />
           <div style={{ display: 'flex', alignItems: 'center', gap: 14, position: 'relative' }}>
-            <div style={{ width: 52, height: 52, borderRadius: 14, background: 'rgba(255,255,255,0.22)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, backdropFilter: 'blur(4px)' }}>
+            <div style={{ width: 52, height: 52, borderRadius: 8, background: 'rgba(255,255,255,0.22)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, backdropFilter: 'blur(4px)' }}>
               <Icon name={category.icon} size={26} />
             </div>
             <div>
@@ -58,7 +58,7 @@ export default function CategoryRow({ index, category, onOpenJournal }) {
             return (
               <button key={c.key} onClick={() => toggle(c.key)}
                 style={{
-                  flex: '1 1 140px', minWidth: 140, textAlign: 'left', padding: '14px 16px', borderRadius: 14,
+                  flex: '1 1 140px', minWidth: 140, textAlign: 'left', padding: '14px 16px', borderRadius: 8,
                   background: active ? c.bg : 'var(--surface-2)',
                   border: `2px solid ${active ? c.color : 'transparent'}`,
                   transition: 'all 0.15s', cursor: 'pointer',

@@ -35,7 +35,7 @@ export default function KpiCard({ variant, title, subtitle, value, percent, tota
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <div
             style={{
-              width: 44, height: 44, borderRadius: 12, flexShrink: 0,
+              width: 44, height: 44, borderRadius: 7, flexShrink: 0,
               background: c.soft, color: c.color,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}
