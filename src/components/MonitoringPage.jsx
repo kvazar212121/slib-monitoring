@@ -8,7 +8,7 @@ import StatusStatCard from './StatusStatCard';
 import TotalStatCard from './TotalStatCard';
 import CategoryDetailView from './CategoryDetailView';
 import JournalsPanel from './JournalsPanel';
-import CategoryStatCard from './CategoryStatCard';
+import CategoryRow from './CategoryRow';
 import CategoryPanel from './CategoryPanel';
 import { CATEGORIES, categoryBreakdown } from '../data/categories';
 
@@ -150,14 +150,13 @@ export default function MonitoringPage() {
         <p style={{ margin: '0 0 14px', color: 'var(--text-2)', fontSize: 13 }}>
           Har bir yo'nalish bo'yicha jurnallar yashil / sariq / qizil holatga ajratilgan. Statusga bosib ro'yxatni oching.
         </p>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))', gap: 16 }}>
+        <div>
           {CATEGORIES.map((c, i) => (
-            <CategoryStatCard
+            <CategoryRow
               key={c.id}
               index={i}
               category={c}
-              breakdown={catBreakdowns[c.id]}
-              onView={(statusKey) => setCategoryPanel({ category: c, status: statusKey })}
+              onOpenJournal={(id) => setSelected(JOURNALS.find((j) => j.id === id) || null)}
             />
           ))}
         </div>
