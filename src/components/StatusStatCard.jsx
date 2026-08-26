@@ -5,7 +5,6 @@ import { STATUS, GROUPS } from '../data/criteria';
 // Status kartasi: Yaxshi(yashil) / O'rtacha(sariq) / Faol emas(qizil)
 export default function StatusStatCard({ index, statusKey, count, total, trend, groupBreakdown, onView }) {
   const sc = STATUS[statusKey];
-  const pct = total ? ((count / total) * 100) : 0;
   const GRAD = `linear-gradient(135deg,${sc.color},${sc.ring})`;
   const icon = statusKey === 'green' ? 'check' : statusKey === 'yellow' ? 'warn' : 'x';
   const subtitle = statusKey === 'green' ? 'Platformadan faol foydalanmoqda'
@@ -43,8 +42,7 @@ export default function StatusStatCard({ index, statusKey, count, total, trend, 
             <div style={{ fontSize: 11.5, opacity: 0.9, marginTop: 3 }}>jami jurnallardan</div>
           </div>
           <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: 22, fontWeight: 800 }}>{pct.toFixed(1)}%</div>
-            {trend && <div style={{ opacity: 0.9, marginTop: 4 }}><Sparkline data={trend} color="#ffffff" width={92} height={30} /></div>}
+            {trend && <div style={{ opacity: 0.9 }}><Sparkline data={trend} color="#ffffff" width={100} height={38} /></div>}
           </div>
         </div>
       </div>

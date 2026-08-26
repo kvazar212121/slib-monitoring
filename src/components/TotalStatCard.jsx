@@ -33,7 +33,6 @@ export default function TotalStatCard({ total, onView }) {
             <div style={{ fontSize: 40, fontWeight: 800, lineHeight: 1 }}>{total}</div>
             <div style={{ fontSize: 11.5, opacity: 0.9, marginTop: 3 }}>umumiy soni</div>
           </div>
-          <div style={{ fontSize: 22, fontWeight: 800 }}>100%</div>
         </div>
       </div>
 
