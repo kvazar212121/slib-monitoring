@@ -14,12 +14,15 @@ export default function StatusStatCard({ index, statusKey, count, total, trend, 
 
   return (
     <div
+      onClick={() => onView(statusKey)}
       style={{
         background: 'var(--surface)', borderRadius: 18, border: '1px solid var(--border)',
-        boxShadow: 'var(--shadow-sm)', overflow: 'hidden',
+        boxShadow: 'var(--shadow-sm)', overflow: 'hidden', cursor: 'pointer',
         animation: `fadeUp 0.45s ease ${index * 0.08}s both`,
-        display: 'flex', flexDirection: 'column',
+        display: 'flex', flexDirection: 'column', transition: 'transform 0.15s, box-shadow 0.15s',
       }}
+      onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = 'var(--shadow-lg)'; }}
+      onMouseLeave={(e) => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'var(--shadow-sm)'; }}
     >
       {/* Gradient header - status rangida */}
       <div style={{ background: GRAD, padding: '20px 22px', color: '#fff', position: 'relative', overflow: 'hidden' }}>
@@ -64,19 +67,9 @@ export default function StatusStatCard({ index, statusKey, count, total, trend, 
             );
           })}
         </div>
-
-        <button
-          onClick={() => onView(statusKey)}
-          style={{
-            marginTop: 16, padding: '11px', borderRadius: 11, background: sc.color, color: '#fff',
-            fontWeight: 700, fontSize: 13, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
-            transition: 'opacity 0.15s, transform 0.15s',
-          }}
-          onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.9'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'none'; }}
-        >
-          <Icon name="chart" size={16} /> Ro'yxatni ko'rish <Icon name="chevronRight" size={15} />
-        </button>
+        <div style={{ marginTop: 14, paddingTop: 12, borderTop: '1px solid var(--surface-3)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, fontSize: 12.5, fontWeight: 700, color: sc.color }}>
+          Ro'yxatni ochish uchun bosing <Icon name="chevronRight" size={15} />
+        </div>
       </div>
     </div>
   );

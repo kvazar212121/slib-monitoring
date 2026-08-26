@@ -16,7 +16,7 @@ export default function JournalsPanel({ initialStatus = 'all', group = null, onC
   const [groupView, setGroupView] = useState(group ? group.id : 'overview');
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('total');
-  const [view, setView] = useState('cards'); // cards | table
+  const [view, setView] = useState('table'); // table | cards
 
   // Guruh tanlangan bo'lsa - statusni guruhga xos ballardan olamiz
   const statusOf = (j) => (group ? j.groupStatus[group.id] : j.status);
