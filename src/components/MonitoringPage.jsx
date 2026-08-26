@@ -5,7 +5,7 @@ import { StatusPill, StatusDot, CriteriaCell, Sparkline } from './ui';
 import KpiCard from './KpiCard';
 import JournalDrawer from './JournalDrawer';
 import Icon, { CRITERIA_ICON, GROUP_ICON } from './Icon';
-import CriteriaStatCard from './CriteriaStatCard';
+import StatusStatCard from './StatusStatCard';
 import CategoryDetailView from './CategoryDetailView';
 import JournalsPanel from './JournalsPanel';
 
@@ -122,21 +122,26 @@ export default function MonitoringPage() {
           active={false} onClick={() => setJournalsPanel({ status: 'red' })} />
       </div>
 
-      {/* Kriteriyalar bo'yicha umumiy ko'rsatkichlar */}
+      {/* Status bo'yicha umumiy ko'rsatkichlar */}
       <div style={{ marginBottom: 24 }}>
         <h2 style={{ fontSize: 16, fontWeight: 800, margin: '0 0 14px', display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Icon name="chart" size={18} /> Kriteriyalar bo'yicha umumiy ko'rsatkichlar
+          <Icon name="chart" size={18} /> Status bo'yicha umumiy ko'rsatkichlar
         </h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(320px,1fr))', gap: 16 }}>
-          {GROUPS.map((g, i) => (
-            <CriteriaStatCard
-              key={g.id}
+          {[
+            { key: 'green', count: summary.green, trend: [40,45,52,58,60,66,70,74,80,85,88,92] },
+            { key: 'yellow', count: summary.yellow, trend: [60,58,55,57,54,52,50,53,49,51,48,50] },
+            { key: 'red', count: summary.red, trend: [30,28,32,26,29,24,27,22,25,20,23,18] },
+          ].map((s, i) => (
+            <StatusStatCard
+              key={s.key}
               index={i}
-              group={g}
-              breakdown={groupBreakdown[g.id]}
+              statusKey={s.key}
+              count={s.count}
               total={summary.total}
-              trend={[45,50,48,55,60,58,66,70,68,75,80,85].map((v) => v - i * 6)}
-              onView={(statusKey) => setJournalsPanel({ group: g, status: statusKey })}
+              trend={s.trend}
+              groupBreakdown={groupBreakdown}
+              onView={(statusKey) => setJournalsPanel({ status: statusKey })}
             />
           ))}
         </div>
