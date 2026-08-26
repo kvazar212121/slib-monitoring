@@ -106,21 +106,20 @@ export default function MonitoringPage() {
 
       {/* KPI cards */}
       <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginBottom: 22 }}>
-        <KpiCard variant="green" title="Yaxshi" subtitle="Faol jurnallar" index={0}
+        <KpiCard variant="blue" title="Jami jurnallar" subtitle="Umumiy soni" index={0}
+          value={summary.total} percent={100} />
+        <KpiCard variant="green" title="Yaxshi" subtitle="Faol jurnallar" index={1}
           value={summary.green} total={summary.total} percent={Math.round((summary.green / summary.total) * 100)}
           trend={[40,45,52,58,60,66,70,74,80,85,88,92]}
           active={statusFilter === 'green'} onClick={() => { setStatusFilter(statusFilter === 'green' ? 'all' : 'green'); setPage(1); }} />
-        <KpiCard variant="yellow" title="O'rtacha" subtitle="O'rtacha faol jurnallar" index={1}
+        <KpiCard variant="yellow" title="O'rtacha" subtitle="O'rtacha faol jurnallar" index={2}
           value={summary.yellow} total={summary.total} percent={Math.round((summary.yellow / summary.total) * 100)}
           trend={[60,58,55,57,54,52,50,53,49,51,48,50]}
           active={statusFilter === 'yellow'} onClick={() => { setStatusFilter(statusFilter === 'yellow' ? 'all' : 'yellow'); setPage(1); }} />
-        <KpiCard variant="red" title="Faol emas" subtitle="Faol bo'lmagan jurnallar" index={2}
+        <KpiCard variant="red" title="Faol emas" subtitle="Faol bo'lmagan jurnallar" index={3}
           value={summary.red} total={summary.total} percent={Math.round((summary.red / summary.total) * 100)}
           trend={[30,28,32,26,29,24,27,22,25,20,23,18]}
           active={statusFilter === 'red'} onClick={() => { setStatusFilter(statusFilter === 'red' ? 'all' : 'red'); setPage(1); }} />
-        <KpiCard variant="blue" title="Jami jurnallar" subtitle="Umumiy soni" index={3}
-          value={summary.total} percent={100}
-          trend={[70,72,74,76,78,80,82,85,88,90,92,95]} />
       </div>
 
       {/* Kriteriyalar bo'yicha umumiy ko'rsatkichlar */}
