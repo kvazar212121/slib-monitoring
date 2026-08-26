@@ -28,7 +28,7 @@ export default function MonitoringPage() {
   const [search, setSearch] = useState('');
   const initialJournal = (() => {
     if (typeof window === 'undefined') return null;
-    const m = window.location.hash.match(/journal=(\d+)/);
+    const m = window.location.hash.match(/(?:journal|open)=(\d+)/);
     return m ? JOURNALS.find((j) => j.id === Number(m[1])) || null : null;
   })();
   const [selected, setSelected] = useState(initialJournal);
