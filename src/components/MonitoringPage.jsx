@@ -163,13 +163,6 @@ export default function MonitoringPage() {
         </div>
       </div>
 
-      {/* Legend row */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))', gap: 14, marginTop: 20 }}>
-        <LegendCard />
-        <ScoringCard />
-        <CriticalRulesCard />
-      </div>
-
       {selected && <JournalDrawer journal={selected} onClose={() => setSelected(null)} />}
       {categoryView && (
         <CategoryDetailView
