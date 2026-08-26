@@ -1,22 +1,23 @@
 import Icon, { GROUP_ICON } from './Icon';
 import { Sparkline } from './ui';
+import { STATUS } from '../data/criteria';
 
-// Zamonaviy kriteriya karta: gradient bosh, katta foiz, stacked segment-bar
+// Kriteriya guruhi kartasi: guruhning o'z statusi (yashil/sariq/qizil)
+// va ichidagi statuslarga bosilsa jurnallar ochiladi
 export default function CriteriaStatCard({ index, group, breakdown, total, trend, onView }) {
   const { green, yellow, red } = breakdown;
   const pct = (v) => (total ? (v / total) * 100 : 0);
   const greenPct = Math.round(pct(green));
 
-  const GRAD = [
-    'linear-gradient(135deg,#0ea5e9,#2563eb)',
-    'linear-gradient(135deg,#8b5cf6,#6d28d9)',
-    'linear-gradient(135deg,#f59e0b,#ea580c)',
-  ][index % 3];
+  // Guruhning umumiy statusi: yashil jurnallar ulushiga qarab
+  const groupStatus = greenPct >= 55 ? 'green' : greenPct >= 35 ? 'yellow' : 'red';
+  const sc = STATUS[groupStatus];
+  const GRAD = `linear-gradient(135deg,${sc.color},${sc.ring})`;
 
   const rows = [
-    { s: 'Yaxshi', v: green, color: '#16a34a', bg: '#dcfce7', dot: '#22c55e' },
-    { s: "O'rtacha", v: yellow, color: '#d97706', bg: '#fef3c7', dot: '#f59e0b' },
-    { s: 'Faol emas', v: red, color: '#dc2626', bg: '#fee2e2', dot: '#ef4444' },
+    { key: 'green', s: 'Yaxshi', v: green, color: '#16a34a', bg: '#dcfce7', dot: '#22c55e' },
+    { key: 'yellow', s: "O'rtacha", v: yellow, color: '#d97706', bg: '#fef3c7', dot: '#f59e0b' },
+    { key: 'red', s: 'Faol emas', v: red, color: '#dc2626', bg: '#fee2e2', dot: '#ef4444' },
   ];
 
   return (
@@ -28,7 +29,7 @@ export default function CriteriaStatCard({ index, group, breakdown, total, trend
         display: 'flex', flexDirection: 'column',
       }}
     >
-      {/* Gradient header */}
+      {/* Gradient header - guruh statusi rangida */}
       <div style={{ background: GRAD, padding: '18px 20px', color: '#fff', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', right: -20, top: -20, width: 110, height: 110, borderRadius: '50%', background: 'rgba(255,255,255,0.12)' }} />
         <div style={{ position: 'absolute', right: 24, bottom: -30, width: 70, height: 70, borderRadius: '50%', background: 'rgba(255,255,255,0.08)' }} />
@@ -40,6 +41,9 @@ export default function CriteriaStatCard({ index, group, breakdown, total, trend
             <div style={{ fontSize: 11, fontWeight: 700, opacity: 0.85, letterSpacing: 0.4 }}>{index + 1}-KRITERIYA GURUHI</div>
             <div style={{ fontSize: 15, fontWeight: 800, lineHeight: 1.25, marginTop: 1 }}>{group.title}</div>
           </div>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '4px 11px', borderRadius: 999, background: 'rgba(255,255,255,0.22)', fontSize: 11.5, fontWeight: 800, flexShrink: 0 }}>
+            <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#fff' }} /> {sc.label}
+          </span>
         </div>
         <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginTop: 14, position: 'relative' }}>
           <div>
@@ -63,29 +67,33 @@ export default function CriteriaStatCard({ index, group, breakdown, total, trend
           <div style={{ width: `${pct(red)}%`, background: 'linear-gradient(90deg,#f87171,#ef4444)', borderRadius: 6, transition: 'width 0.7s ease' }} title={`Faol emas: ${red}`} />
         </div>
 
-        {/* Rows */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {/* Rows - har biriga bosilsa o'sha statusli jurnallar ochiladi */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
           {rows.map((r) => (
-            <div key={r.s} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <button key={r.s} onClick={() => onView(r.key)}
+              style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 10px', borderRadius: 10, background: 'var(--surface-2)', transition: 'background 0.15s', textAlign: 'left', width: '100%' }}
+              onMouseEnter={(e) => e.currentTarget.style.background = r.bg}
+              onMouseLeave={(e) => e.currentTarget.style.background = 'var(--surface-2)'}>
               <span style={{ width: 9, height: 9, borderRadius: '50%', background: r.dot, flexShrink: 0 }} />
               <span style={{ fontSize: 13, color: 'var(--text-2)', fontWeight: 600, flex: 1 }}>{r.s}</span>
               <span style={{ fontSize: 12, fontWeight: 800, color: r.color, background: r.bg, padding: '2px 9px', borderRadius: 7 }}>{r.v} ta</span>
               <span style={{ fontSize: 12, color: 'var(--text-3)', fontWeight: 600, minWidth: 42, textAlign: 'right' }}>{pct(r.v).toFixed(1)}%</span>
-            </div>
+              <span style={{ display: 'inline-flex', color: 'var(--text-3)' }}><Icon name="chevronRight" size={14} /></span>
+            </button>
           ))}
         </div>
 
         <button
-          onClick={onView}
+          onClick={() => onView('all')}
           style={{
-            marginTop: 16, padding: '11px', borderRadius: 11, background: 'var(--text)', color: '#fff',
+            marginTop: 14, padding: '11px', borderRadius: 11, background: 'var(--text)', color: '#fff',
             fontWeight: 700, fontSize: 13, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
             transition: 'opacity 0.15s, transform 0.15s',
           }}
           onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.88'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
           onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'none'; }}
         >
-          <Icon name="chart" size={16} /> Katalogni ochish <Icon name="chevronRight" size={15} />
+          <Icon name="chart" size={16} /> Barcha jurnallarni ko'rish <Icon name="chevronRight" size={15} />
         </button>
       </div>
     </div>

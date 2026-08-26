@@ -38,7 +38,7 @@ export default function MonitoringPage() {
     return m ? GROUPS.find((g) => g.id === m[1]) || null : null;
   })();
   const [categoryView, setCategoryView] = useState(initialCategory); // ochilgan kategoriya guruhi
-  const [journalsPanel, setJournalsPanel] = useState(null); // 'all'|'green'|'yellow'|'red' yoki null
+  const [journalsPanel, setJournalsPanel] = useState(null); // {group?, status} yoki null
   const [sortBy, setSortBy] = useState('total');
   const [page, setPage] = useState(1);
   const pageSize = 8;
@@ -110,16 +110,16 @@ export default function MonitoringPage() {
       <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginBottom: 22 }}>
         <KpiCard variant="blue" title="Jami jurnallar" subtitle="Umumiy soni" index={0}
           value={summary.total} percent={100}
-          onClick={() => setJournalsPanel('all')} />
+          onClick={() => setJournalsPanel({ status: 'all' })} />
         <KpiCard variant="green" title="Yaxshi" subtitle="Faol jurnallar" index={1}
           value={summary.green} total={summary.total} percent={Math.round((summary.green / summary.total) * 100)}
-          active={false} onClick={() => setJournalsPanel('green')} />
+          active={false} onClick={() => setJournalsPanel({ status: 'green' })} />
         <KpiCard variant="yellow" title="O'rtacha" subtitle="O'rtacha faol jurnallar" index={2}
           value={summary.yellow} total={summary.total} percent={Math.round((summary.yellow / summary.total) * 100)}
-          active={false} onClick={() => setJournalsPanel('yellow')} />
+          active={false} onClick={() => setJournalsPanel({ status: 'yellow' })} />
         <KpiCard variant="red" title="Faol emas" subtitle="Faol bo'lmagan jurnallar" index={3}
           value={summary.red} total={summary.total} percent={Math.round((summary.red / summary.total) * 100)}
-          active={false} onClick={() => setJournalsPanel('red')} />
+          active={false} onClick={() => setJournalsPanel({ status: 'red' })} />
       </div>
 
       {/* Kriteriyalar bo'yicha umumiy ko'rsatkichlar */}
@@ -136,7 +136,7 @@ export default function MonitoringPage() {
               breakdown={groupBreakdown[g.id]}
               total={summary.total}
               trend={[45,50,48,55,60,58,66,70,68,75,80,85].map((v) => v - i * 6)}
-              onView={() => setCategoryView(g)}
+              onView={(statusKey) => setJournalsPanel({ group: g, status: statusKey })}
             />
           ))}
         </div>
@@ -159,7 +159,8 @@ export default function MonitoringPage() {
       )}
       {journalsPanel && (
         <JournalsPanel
-          initialStatus={journalsPanel}
+          initialStatus={journalsPanel.status || 'all'}
+          group={journalsPanel.group || null}
           onClose={() => setJournalsPanel(null)}
           onOpenJournal={(j) => setSelected(j)}
         />

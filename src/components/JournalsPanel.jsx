@@ -11,36 +11,39 @@ const STATUS_META = {
   red: { label: 'Faol emas jurnallar', grad: 'linear-gradient(135deg,#ef4444,#dc2626)', icon: 'x' },
 };
 
-export default function JournalsPanel({ initialStatus = 'all', onClose, onOpenJournal }) {
+export default function JournalsPanel({ initialStatus = 'all', group = null, onClose, onOpenJournal }) {
   const [statusFilter, setStatusFilter] = useState(initialStatus);
-  const [groupView, setGroupView] = useState('overview');
+  const [groupView, setGroupView] = useState(group ? group.id : 'overview');
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('total');
   const [view, setView] = useState('cards'); // cards | table
+
+  // Guruh tanlangan bo'lsa - statusni guruhga xos ballardan olamiz
+  const statusOf = (j) => (group ? j.groupStatus[group.id] : j.status);
 
   const groupCriteria = groupView === 'overview' ? null : CRITERIA.filter((c) => c.group === groupView);
 
   const counts = useMemo(() => {
     const c = { all: JOURNALS.length, green: 0, yellow: 0, red: 0 };
-    JOURNALS.forEach((j) => { c[j.status] += 1; });
+    JOURNALS.forEach((j) => { c[statusOf(j)] += 1; });
     return c;
-  }, []);
+  }, [group]);
 
   const filtered = useMemo(() => {
     let list = JOURNALS.filter((j) => {
-      if (statusFilter !== 'all' && j.status !== statusFilter) return false;
+      if (statusFilter !== 'all' && statusOf(j) !== statusFilter) return false;
       if (search && !j.name.toLowerCase().includes(search.toLowerCase()) && !j.studyField.toLowerCase().includes(search.toLowerCase())) return false;
       return true;
     });
     list = [...list].sort((a, b) => {
-      if (sortBy === 'total') return b.total - a.total;
+      if (sortBy === 'total') return (group ? b.groupScore[group.id] - a.groupScore[group.id] : b.total - a.total);
       if (sortBy === 'name') return a.name.localeCompare(b.name);
       if (sortBy === 'articles') return b.metrics.articles - a.metrics.articles;
       if (sortBy === 'recent') return a.lastUpdateDays - b.lastUpdateDays;
       return 0;
     });
     return list;
-  }, [statusFilter, search, sortBy]);
+  }, [statusFilter, search, sortBy, group]);
 
   const meta = STATUS_META[statusFilter] || STATUS_META.all;
   const avgScore = filtered.length ? Math.round(filtered.reduce((s, j) => s + j.total, 0) / filtered.length) : 0;
@@ -61,7 +64,7 @@ export default function JournalsPanel({ initialStatus = 'all', onClose, onOpenJo
             <Icon name={meta.icon} size={24} />
           </div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, opacity: 0.85, letterSpacing: 0.4 }}>JURNALLAR KATALOGI</div>
+            <div style={{ fontSize: 12, fontWeight: 700, opacity: 0.85, letterSpacing: 0.4 }}>{group ? `${group.title.toUpperCase()} · KATALOG` : 'JURNALLAR KATALOGI'}</div>
             <h1 style={{ margin: '2px 0 0', fontSize: 22, fontWeight: 800 }}>{meta.label}</h1>
           </div>
           {/* Mini stats */}
@@ -152,7 +155,7 @@ export default function JournalsPanel({ initialStatus = 'all', onClose, onOpenJo
         {view === 'cards' ? (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(310px,1fr))', gap: 16 }}>
             {filtered.map((j, i) => (
-              <JournalCard key={j.id} j={j} index={i} groupView={groupView} groupCriteria={groupCriteria} onClick={() => onOpenJournal(j)} />
+              <JournalCard key={j.id} j={j} index={i} groupView={groupView} groupCriteria={groupCriteria} group={group} onClick={() => onOpenJournal(j)} />
             ))}
           </div>
         ) : (
@@ -163,8 +166,10 @@ export default function JournalsPanel({ initialStatus = 'all', onClose, onOpenJo
   );
 }
 
-function JournalCard({ j, index, groupView, groupCriteria, onClick }) {
-  const st = statusFromScore(j.total);
+function JournalCard({ j, index, groupView, groupCriteria, group, onClick }) {
+  const st = group ? STATUS[j.groupStatus[group.id]] : statusFromScore(j.total);
+  const scoreShown = group ? j.groupScore[group.id] : j.total;
+  const scoreMax = group ? j.groupMax[group.id] : 100;
   return (
     <div onClick={onClick}
       style={{ background: 'var(--surface)', borderRadius: 16, border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)', overflow: 'hidden', cursor: 'pointer', transition: 'transform 0.15s, box-shadow 0.15s', animation: `fadeUp 0.4s ease ${Math.min(index * 0.03, 0.4)}s both` }}
@@ -178,8 +183,8 @@ function JournalCard({ j, index, groupView, groupCriteria, onClick }) {
             <div style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 3 }}>{j.issn ? `ISSN: ${j.issn}` : j.studyField}</div>
           </div>
           <div style={{ textAlign: 'center', flexShrink: 0 }}>
-            <div style={{ fontSize: 22, fontWeight: 800, color: st.color, lineHeight: 1 }}>{j.total}</div>
-            <div style={{ fontSize: 9, color: 'var(--text-3)' }}>/ 100</div>
+            <div style={{ fontSize: 22, fontWeight: 800, color: st.color, lineHeight: 1 }}>{scoreShown}</div>
+            <div style={{ fontSize: 9, color: 'var(--text-3)' }}>/ {scoreMax}</div>
           </div>
         </div>
 
