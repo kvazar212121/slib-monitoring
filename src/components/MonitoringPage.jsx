@@ -7,6 +7,7 @@ import Icon, { CRITERIA_ICON, GROUP_ICON } from './Icon';
 import StatusStatCard from './StatusStatCard';
 import TotalStatCard from './TotalStatCard';
 import TopStatsRow from './TopStatsRow';
+import StatDetailPanel from './StatDetailPanel';
 import CategoryDetailView from './CategoryDetailView';
 import JournalsPanel from './JournalsPanel';
 import CategoryRow from './CategoryRow';
@@ -44,6 +45,7 @@ export default function MonitoringPage() {
   const [categoryView, setCategoryView] = useState(initialCategory); // ochilgan kategoriya guruhi
   const [journalsPanel, setJournalsPanel] = useState(null); // {group?, status} yoki null
   const [categoryPanel, setCategoryPanel] = useState(null); // {category, status} yoki null
+  const [statPanel, setStatPanel] = useState(null); // stat id yoki null
   const [sortBy, setSortBy] = useState('total');
   const [page, setPage] = useState(1);
   const pageSize = 8;
@@ -118,7 +120,7 @@ export default function MonitoringPage() {
       </div>
 
       {/* Tepadagi kichik statistika kartalari */}
-      <TopStatsRow />
+      <TopStatsRow onOpen={(id) => setStatPanel(id)} />
 
       {/* Status bo'yicha umumiy ko'rsatkichlar */}
       <div style={{ marginBottom: 24 }}>
@@ -187,6 +189,13 @@ export default function MonitoringPage() {
           category={categoryPanel.category}
           initialStatus={categoryPanel.status || 'all'}
           onClose={() => setCategoryPanel(null)}
+          onOpenJournal={(id) => setSelected(JOURNALS.find((j) => j.id === id) || null)}
+        />
+      )}
+      {statPanel && (
+        <StatDetailPanel
+          statId={statPanel}
+          onClose={() => setStatPanel(null)}
           onOpenJournal={(id) => setSelected(JOURNALS.find((j) => j.id === id) || null)}
         />
       )}

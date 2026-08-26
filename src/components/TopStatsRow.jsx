@@ -10,7 +10,7 @@ const STATS = [
   { id: 'admins', label: 'Faol adminlar', value: '412', note: 'Jami', delta: +11, icon: 'users' },
 ];
 
-export default function TopStatsRow() {
+export default function TopStatsRow({ onOpen }) {
   return (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))', gap: 12, marginBottom: 20 }}>
       {STATS.map((s, i) => {
@@ -19,9 +19,10 @@ export default function TopStatsRow() {
         const bg = up ? '#dcfce7' : '#fee2e2';
         return (
           <div key={s.id}
+            onClick={() => onOpen && onOpen(s.id)}
             style={{
               background: 'var(--surface)', borderRadius: 14, border: '1px solid var(--border)',
-              boxShadow: 'var(--shadow-sm)', padding: '14px 16px',
+              boxShadow: 'var(--shadow-sm)', padding: '14px 16px', cursor: 'pointer',
               animation: `fadeUp 0.4s ease ${i * 0.05}s both`, transition: 'transform 0.15s, box-shadow 0.15s',
             }}
             onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = 'var(--shadow)'; }}
