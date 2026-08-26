@@ -8,6 +8,9 @@ import StatusStatCard from './StatusStatCard';
 import TotalStatCard from './TotalStatCard';
 import CategoryDetailView from './CategoryDetailView';
 import JournalsPanel from './JournalsPanel';
+import CategoryStatCard from './CategoryStatCard';
+import CategoryPanel from './CategoryPanel';
+import { CATEGORIES, categoryBreakdown } from '../data/categories';
 
 function GroupBadge({ status, label }) {
   const s = STATUS[status];
@@ -39,6 +42,7 @@ export default function MonitoringPage() {
   })();
   const [categoryView, setCategoryView] = useState(initialCategory); // ochilgan kategoriya guruhi
   const [journalsPanel, setJournalsPanel] = useState(null); // {group?, status} yoki null
+  const [categoryPanel, setCategoryPanel] = useState(null); // {category, status} yoki null
   const [sortBy, setSortBy] = useState('total');
   const [page, setPage] = useState(1);
   const pageSize = 8;
@@ -52,6 +56,12 @@ export default function MonitoringPage() {
     JOURNALS.forEach((j) => {
       GROUPS.forEach((g) => { out[g.id][j.groupStatus[g.id]] += 1; });
     });
+    return out;
+  }, []);
+
+  const catBreakdowns = useMemo(() => {
+    const out = {};
+    CATEGORIES.forEach((c) => { out[c.id] = categoryBreakdown(c.id); });
     return out;
   }, []);
 
@@ -132,6 +142,27 @@ export default function MonitoringPage() {
         </div>
       </div>
 
+      {/* Kategoriyalar bo'yicha statistika (SLIB TZ §10) */}
+      <div style={{ marginBottom: 24 }}>
+        <h2 style={{ fontSize: 16, fontWeight: 800, margin: '0 0 5px', display: 'flex', alignItems: 'center', gap: 8 }}>
+          <Icon name="chart" size={18} /> Kategoriyalar bo'yicha statistika
+        </h2>
+        <p style={{ margin: '0 0 14px', color: 'var(--text-2)', fontSize: 13 }}>
+          Har bir yo'nalish bo'yicha jurnallar yashil / sariq / qizil holatga ajratilgan. Statusga bosib ro'yxatni oching.
+        </p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))', gap: 16 }}>
+          {CATEGORIES.map((c, i) => (
+            <CategoryStatCard
+              key={c.id}
+              index={i}
+              category={c}
+              breakdown={catBreakdowns[c.id]}
+              onView={(statusKey) => setCategoryPanel({ category: c, status: statusKey })}
+            />
+          ))}
+        </div>
+      </div>
+
       {/* Legend row */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))', gap: 14, marginTop: 20 }}>
         <LegendCard />
@@ -153,6 +184,14 @@ export default function MonitoringPage() {
           group={journalsPanel.group || null}
           onClose={() => setJournalsPanel(null)}
           onOpenJournal={(j) => setSelected(j)}
+        />
+      )}
+      {categoryPanel && (
+        <CategoryPanel
+          category={categoryPanel.category}
+          initialStatus={categoryPanel.status || 'all'}
+          onClose={() => setCategoryPanel(null)}
+          onOpenJournal={(id) => setSelected(JOURNALS.find((j) => j.id === id) || null)}
         />
       )}
     </div>
