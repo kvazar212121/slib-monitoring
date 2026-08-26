@@ -1,9 +1,8 @@
 import Icon from './Icon';
-import { Sparkline } from './ui';
 import { STATUS, GROUPS } from '../data/criteria';
 
 // Status kartasi: Yaxshi(yashil) / O'rtacha(sariq) / Faol emas(qizil)
-export default function StatusStatCard({ index, statusKey, count, total, trend, groupBreakdown, onView }) {
+export default function StatusStatCard({ index, statusKey, count, total, groupBreakdown, onView }) {
   const sc = STATUS[statusKey];
   const GRAD = `linear-gradient(135deg,${sc.color},${sc.ring})`;
   const icon = statusKey === 'green' ? 'check' : statusKey === 'yellow' ? 'warn' : 'x';
@@ -36,14 +35,9 @@ export default function StatusStatCard({ index, statusKey, count, total, trend, 
             <div style={{ fontSize: 11.5, opacity: 0.9, marginTop: 2 }}>{subtitle}</div>
           </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginTop: 16, position: 'relative' }}>
-          <div>
-            <div style={{ fontSize: 40, fontWeight: 800, lineHeight: 1 }}>{count}<span style={{ fontSize: 18, fontWeight: 600, opacity: 0.8 }}> / {total}</span></div>
-            <div style={{ fontSize: 11.5, opacity: 0.9, marginTop: 3 }}>jami jurnallardan</div>
-          </div>
-          <div style={{ textAlign: 'right' }}>
-            {trend && <div style={{ opacity: 0.9 }}><Sparkline data={trend} color="#ffffff" width={100} height={38} /></div>}
-          </div>
+        <div style={{ marginTop: 16, position: 'relative' }}>
+          <div style={{ fontSize: 40, fontWeight: 800, lineHeight: 1 }}>{count}<span style={{ fontSize: 18, fontWeight: 600, opacity: 0.8 }}> / {total}</span></div>
+          <div style={{ fontSize: 11.5, opacity: 0.9, marginTop: 3 }}>jami jurnallardan</div>
         </div>
       </div>
 
