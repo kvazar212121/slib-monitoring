@@ -5,7 +5,8 @@ import { StatusPill, StatusDot, CriteriaCell, Sparkline } from './ui';
 import KpiCard from './KpiCard';
 import JournalDrawer from './JournalDrawer';
 import Icon, { CRITERIA_ICON, GROUP_ICON } from './Icon';
-import Donut from './Donut';
+import CriteriaStatCard from './CriteriaStatCard';
+import CategoryDetailView from './CategoryDetailView';
 
 function GroupBadge({ status, label }) {
   const s = STATUS[status];
@@ -30,6 +31,12 @@ export default function MonitoringPage() {
     return m ? JOURNALS.find((j) => j.id === Number(m[1])) || null : null;
   })();
   const [selected, setSelected] = useState(initialJournal);
+  const initialCategory = (() => {
+    if (typeof window === 'undefined') return null;
+    const m = window.location.hash.match(/catalog=(\w+)/);
+    return m ? GROUPS.find((g) => g.id === m[1]) || null : null;
+  })();
+  const [categoryView, setCategoryView] = useState(initialCategory); // ochilgan kategoriya guruhi
   const [sortBy, setSortBy] = useState('total');
   const [page, setPage] = useState(1);
   const pageSize = 8;
@@ -116,20 +123,21 @@ export default function MonitoringPage() {
           trend={[70,72,74,76,78,80,82,85,88,90,92,95]} />
       </div>
 
-      {/* Kriteriyalar bo'yicha umumiy ko'rsatkichlar (donut grafiklar) */}
-      <div style={{ marginBottom: 22 }}>
+      {/* Kriteriyalar bo'yicha umumiy ko'rsatkichlar */}
+      <div style={{ marginBottom: 24 }}>
         <h2 style={{ fontSize: 16, fontWeight: 800, margin: '0 0 14px', display: 'flex', alignItems: 'center', gap: 8 }}>
           <Icon name="chart" size={18} /> Kriteriyalar bo'yicha umumiy ko'rsatkichlar
         </h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(320px,1fr))', gap: 16 }}>
           {GROUPS.map((g, i) => (
-            <DonutCard
+            <CriteriaStatCard
               key={g.id}
               index={i}
               group={g}
               breakdown={groupBreakdown[g.id]}
               total={summary.total}
-              onView={() => { setGroupView(g.id); document.getElementById('journals-table')?.scrollIntoView({ behavior: 'smooth' }); }}
+              trend={[45,50,48,55,60,58,66,70,68,75,80,85].map((v) => v - i * 6)}
+              onView={() => setCategoryView(g)}
             />
           ))}
         </div>
@@ -303,60 +311,13 @@ export default function MonitoringPage() {
       </div>
 
       {selected && <JournalDrawer journal={selected} onClose={() => setSelected(null)} />}
-    </div>
-  );
-}
-
-function DonutCard({ index, group, breakdown, total, onView }) {
-  const { green, yellow, red } = breakdown;
-  const segs = [
-    { key: 'green', color: '#22c55e', value: green },
-    { key: 'yellow', color: '#f59e0b', value: yellow },
-    { key: 'red', color: '#ef4444', value: red },
-  ];
-  const rows = [
-    { s: 'green', label: 'Yaxshi', value: green, color: '#16a34a' },
-    { s: 'yellow', label: "O'rtacha", value: yellow, color: '#d97706' },
-    { s: 'red', label: 'Faol emas', value: red, color: '#dc2626' },
-  ];
-  const pct = (v) => total ? ((v / total) * 100).toFixed(1) : '0.0';
-  return (
-    <div style={{ ...cardStyle, padding: '20px 22px', animation: `fadeUp 0.4s ease ${index * 0.07}s both` }}>
-      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 11, marginBottom: 16 }}>
-        <div style={{ width: 26, height: 26, borderRadius: '50%', background: 'var(--blue)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 800, flexShrink: 0 }}>{index + 1}</div>
-        <div>
-          <div style={{ fontSize: 14.5, fontWeight: 800, lineHeight: 1.25 }}>{group.title} bo'yicha</div>
-          <div style={{ fontSize: 11.5, color: 'var(--text-3)', marginTop: 2 }}>{group.hint}</div>
-        </div>
-      </div>
-
-      <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
-        <Donut segments={segs} size={128} thickness={17} centerTop={total} centerBottom="ta jurnallar" />
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {rows.map((r) => (
-            <div key={r.s} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <StatusDot status={r.s} size={9} />
-              <span style={{ fontSize: 13, color: 'var(--text-2)', fontWeight: 600, flex: 1 }}>{r.label}</span>
-              <span style={{ fontSize: 13.5, fontWeight: 800, color: r.color }}>{r.value} ta</span>
-              <span style={{ fontSize: 11.5, color: 'var(--text-3)', minWidth: 44, textAlign: 'right' }}>({pct(r.value)}%)</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <button
-        onClick={onView}
-        style={{
-          width: '100%', marginTop: 16, padding: '10px', borderRadius: 10,
-          background: 'var(--surface-3)', color: 'var(--blue)', fontWeight: 700, fontSize: 13,
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-          transition: 'background 0.15s',
-        }}
-        onMouseEnter={(e) => e.currentTarget.style.background = 'var(--blue-soft)'}
-        onMouseLeave={(e) => e.currentTarget.style.background = 'var(--surface-3)'}
-      >
-        Ro'yxatni ko'rish <Icon name="chevronRight" size={15} />
-      </button>
+      {categoryView && (
+        <CategoryDetailView
+          group={categoryView}
+          onClose={() => setCategoryView(null)}
+          onOpenJournal={(j) => setSelected(j)}
+        />
+      )}
     </div>
   );
 }
