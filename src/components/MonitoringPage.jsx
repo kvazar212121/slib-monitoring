@@ -108,18 +108,11 @@ export default function MonitoringPage() {
 
       {/* KPI cards */}
       <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginBottom: 22 }}>
-        <KpiCard variant="blue" title="Jami jurnallar" subtitle="Umumiy soni" index={0}
-          value={summary.total} percent={100}
-          onClick={() => setJournalsPanel({ status: 'all' })} />
-        <KpiCard variant="green" title="Yaxshi" subtitle="Faol jurnallar" index={1}
-          value={summary.green} total={summary.total} percent={Math.round((summary.green / summary.total) * 100)}
-          active={false} onClick={() => setJournalsPanel({ status: 'green' })} />
-        <KpiCard variant="yellow" title="O'rtacha" subtitle="O'rtacha faol jurnallar" index={2}
-          value={summary.yellow} total={summary.total} percent={Math.round((summary.yellow / summary.total) * 100)}
-          active={false} onClick={() => setJournalsPanel({ status: 'yellow' })} />
-        <KpiCard variant="red" title="Faol emas" subtitle="Faol bo'lmagan jurnallar" index={3}
-          value={summary.red} total={summary.total} percent={Math.round((summary.red / summary.total) * 100)}
-          active={false} onClick={() => setJournalsPanel({ status: 'red' })} />
+        <div style={{ width: 320, maxWidth: '100%' }}>
+          <KpiCard variant="blue" title="Jami jurnallar" subtitle="Umumiy soni" index={0}
+            value={summary.total} percent={100}
+            onClick={() => setJournalsPanel({ status: 'all' })} />
+        </div>
       </div>
 
       {/* Status bo'yicha umumiy ko'rsatkichlar */}
