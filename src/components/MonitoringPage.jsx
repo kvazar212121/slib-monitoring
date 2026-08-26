@@ -2,10 +2,10 @@ import { useEffect, useMemo, useState } from 'react';
 import { JOURNALS, summarize } from '../data/journals';
 import { CRITERIA, GROUPS, STATUS, statusFromScore } from '../data/criteria';
 import { StatusPill, StatusDot, CriteriaCell, Sparkline } from './ui';
-import KpiCard from './KpiCard';
 import JournalDrawer from './JournalDrawer';
 import Icon, { CRITERIA_ICON, GROUP_ICON } from './Icon';
 import StatusStatCard from './StatusStatCard';
+import TotalStatCard from './TotalStatCard';
 import CategoryDetailView from './CategoryDetailView';
 import JournalsPanel from './JournalsPanel';
 
@@ -106,21 +106,13 @@ export default function MonitoringPage() {
         </div>
       </div>
 
-      {/* KPI cards */}
-      <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginBottom: 22 }}>
-        <div style={{ width: 320, maxWidth: '100%' }}>
-          <KpiCard variant="blue" title="Jami jurnallar" subtitle="Umumiy soni" index={0}
-            value={summary.total} percent={100}
-            onClick={() => setJournalsPanel({ status: 'all' })} />
-        </div>
-      </div>
-
       {/* Status bo'yicha umumiy ko'rsatkichlar */}
       <div style={{ marginBottom: 24 }}>
         <h2 style={{ fontSize: 16, fontWeight: 800, margin: '0 0 14px', display: 'flex', alignItems: 'center', gap: 8 }}>
           <Icon name="chart" size={18} /> Status bo'yicha umumiy ko'rsatkichlar
         </h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(320px,1fr))', gap: 16 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: 16 }}>
+          <TotalStatCard total={summary.total} onView={() => setJournalsPanel({ status: 'all' })} />
           {[
             { key: 'green', count: summary.green, trend: [40,45,52,58,60,66,70,74,80,85,88,92] },
             { key: 'yellow', count: summary.yellow, trend: [60,58,55,57,54,52,50,53,49,51,48,50] },
@@ -128,7 +120,7 @@ export default function MonitoringPage() {
           ].map((s, i) => (
             <StatusStatCard
               key={s.key}
-              index={i}
+              index={i + 1}
               statusKey={s.key}
               count={s.count}
               total={summary.total}
